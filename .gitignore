@@ -1,0 +1,15 @@
+# Object files
+*.o
+*.obj
+
+# Binary/Executable files
+*.out
+main-*
+
+# Backup files
+*.bak
+*.swp
+*~
+
+# IDE/Editor
+.vscode/
