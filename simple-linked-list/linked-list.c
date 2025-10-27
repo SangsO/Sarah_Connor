@@ -160,3 +160,68 @@ void insert_last_node(linkedList_h* L, char* x)
     temp->link = new_node;
 
 }
+
+void delete_node(linkedList_h* L, listNode* p)
+{
+    listNode* pre; // Pointer of previous node that going to delete
+
+    if (L->head == NULL) { // If list if empty, return
+        return;
+    }
+
+    if (L->head->link == NULL) { // If list has only one node,
+        free(L->head); // Free the first node
+        L->head = NULL; // And list start pointer -> to NULL
+        return;
+    }
+    else if (p == NULL) { // If there is no node to delete, return
+        return;
+    }
+    else { // Find previous node of p to be deleted, using the pointer pre
+        pre = L->head;
+
+        while (pre->link != p) {
+            pre = pre->link;
+        }
+
+        pre->link = p->link; // Link previous node of p to be deleted, to next node
+        free(p); // Free delete node
+    }
+}
+
+// Find x node in the list
+listNode* search_node(linkedList_h* L, char* x)
+{
+    listNode* temp;
+    temp = L->head;
+
+    while (temp !=NULL) {
+        if (strcmp(temp->data, x) == 0) {
+            return temp;
+        }
+        else {
+            temp = temp->link;
+        }
+    }
+}
+
+// Reverse node order in linked list
+void reverse(linkedList_h* L)
+{
+    listNode* p;
+    listNode* q;
+    listNode* r;
+
+    p = L->head; // Set pointer p into first node
+    q = NULL;
+    r = NULL;
+
+    // Start first node, follow the link to next node and change the link
+    while (p != NULL) {
+        r = q;
+        q = p;
+        p = p->link;
+        q->link = r;
+    }
+    L->head = q;
+}
