@@ -188,8 +188,34 @@ void delete_node(linkedList_h* L, listNode* p)
         free(p); // Free delete node
     }
 }
+/**********************************************************
+Delete middle node: L = (Monday, Wednesday, Friday) → (Monday, Friday)
 
-// Find x node in the list
+Before:
+       ┌─────┐      ┌───────────┐      ┌────────┐
+       │  M  │ ───▶ │     W     │ ───▶ │   F    │ ───▶ NULL
+       └─────┘      └───────────┘      └────────┘
+        ▲            ▲
+        pre          p (delete this)
+
+After pre->link = p->link:
+       ┌─────┐                         ┌────────┐
+       │  M  │ ─────────────────────▶  │   F    │ ───▶ NULL
+       └─────┘       ╳                 └────────┘
+                ┌───────────┐
+                │     W     │ (isolated)
+                └───────────┘
+                 ▲
+                 p
+
+After free(p):
+       ┌─────┐                         ┌────────┐
+       │  M  │ ─────────────────────▶  │   F    │ ───▶ NULL
+       └─────┘                         └────────┘
+                ╔═══════════╗
+                ║   freed   ║
+                ╚═══════════╝
+**********************************************************/ // Find x node in the list
 listNode* search_node(linkedList_h* L, char* x)
 {
     listNode* temp;
@@ -204,6 +230,17 @@ listNode* search_node(linkedList_h* L, char* x)
         }
     }
 }
+/**********************************************************
+Search "Wednesday" in L = (Monday, Wednesday, Friday)
+
+Step 1:     Step 2:     Step 3 (Found!):
+┌─────┐    ┌─────┐     ┌─────┐
+│  M  │───▶│  W  │────▶│  F  │───▶ NULL
+└─────┘    └─────┘     └─────┘
+ ▲          ▲
+temp      temp (return this)
+"M"!="W"  "W"=="W" ✓
+**********************************************************/
 
 // Reverse node order in linked list
 void reverse(linkedList_h* L)
@@ -225,3 +262,25 @@ void reverse(linkedList_h* L)
     }
     L->head = q;
 }
+/**********************************************************
+Reverse: L = (M, W, F) → (F, W, M)
+Three pointers: r(prev), q(current), p(next)
+
+Initial:           Iter 1:           Iter 2:           Iter 3:
+┌─┐  ┌─┐  ┌─┐    ┌─┐  ┌─┐  ┌─┐    ┌─┐  ┌─┐  ┌─┐    ┌─┐  ┌─┐  ┌─┐
+│M│─▶│W│─▶│F│──▶ │M│  │W│─▶│F│──▶ │M│◀─│W│  │F│──▶ │M│◀─│W│◀─│F│
+└─┘  └─┘  └─┘    └─┘  └─┘  └─┘    └─┘  └─┘  └─┘    └─┘  └─┘  └─┘
+ ▲               NULL  ▲    ▲           ▲    ▲    ▲           ▲    ▲
+ p                     q    p           r    q    p           r    q
+q=NULL                r=q              r=q                   r=q   p=NULL
+r=NULL                q=p              q=p                   q=p
+                      p=p->link        p=p->link             p=p->link
+                      q->link=r        q->link=r             q->link=r
+
+Final: L->head = q
+       ┌─┐  ┌─┐  ┌─┐
+  NULL◀─│M│◀─│W│◀─│F│
+       └─┘  └─┘  └─┘
+                  ▲
+                L->head
+**********************************************************/
