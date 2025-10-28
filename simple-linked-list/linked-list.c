@@ -160,3 +160,127 @@ void insert_last_node(linkedList_h* L, char* x)
     temp->link = new_node;
 
 }
+
+void delete_node(linkedList_h* L, listNode* p)
+{
+    listNode* pre; // Pointer of previous node that going to delete
+
+    if (L->head == NULL) { // If list if empty, return
+        return;
+    }
+
+    if (L->head->link == NULL) { // If list has only one node,
+        free(L->head); // Free the first node
+        L->head = NULL; // And list start pointer -> to NULL
+        return;
+    }
+    else if (p == NULL) { // If there is no node to delete, return
+        return;
+    }
+    else { // Find previous node of p to be deleted, using the pointer pre
+        pre = L->head;
+
+        while (pre->link != p) {
+            pre = pre->link;
+        }
+
+        pre->link = p->link; // Link previous node of p to be deleted, to next node
+        free(p); // Free delete node
+    }
+}
+/**********************************************************
+Delete middle node: L = (Monday, Wednesday, Friday) → (Monday, Friday)
+
+Before:
+       ┌─────┐      ┌───────────┐      ┌────────┐
+       │  M  │ ───▶ │     W     │ ───▶ │   F    │ ───▶ NULL
+       └─────┘      └───────────┘      └────────┘
+        ▲            ▲
+        pre          p (delete this)
+
+After pre->link = p->link:
+       ┌─────┐                         ┌────────┐
+       │  M  │ ─────────────────────▶  │   F    │ ───▶ NULL
+       └─────┘       ╳                 └────────┘
+                ┌───────────┐
+                │     W     │ (isolated)
+                └───────────┘
+                 ▲
+                 p
+
+After free(p):
+       ┌─────┐                         ┌────────┐
+       │  M  │ ─────────────────────▶  │   F    │ ───▶ NULL
+       └─────┘                         └────────┘
+                ╔═══════════╗
+                ║   freed   ║
+                ╚═══════════╝
+**********************************************************/ // Find x node in the list
+listNode* search_node(linkedList_h* L, char* x)
+{
+    listNode* temp;
+    temp = L->head;
+
+    while (temp !=NULL) {
+        if (strcmp(temp->data, x) == 0) {
+            return temp;
+        }
+        else {
+            temp = temp->link;
+        }
+    }
+}
+/**********************************************************
+Search "Wednesday" in L = (Monday, Wednesday, Friday)
+
+Step 1:     Step 2:     Step 3 (Found!):
+┌─────┐    ┌─────┐     ┌─────┐
+│  M  │───▶│  W  │────▶│  F  │───▶ NULL
+└─────┘    └─────┘     └─────┘
+ ▲          ▲
+temp      temp (return this)
+"M"!="W"  "W"=="W" ✓
+**********************************************************/
+
+// Reverse node order in linked list
+void reverse(linkedList_h* L)
+{
+    listNode* p;
+    listNode* q;
+    listNode* r;
+
+    p = L->head; // Set pointer p into first node
+    q = NULL;
+    r = NULL;
+
+    // Start first node, follow the link to next node and change the link
+    while (p != NULL) {
+        r = q;
+        q = p;
+        p = p->link;
+        q->link = r;
+    }
+    L->head = q;
+}
+/**********************************************************
+Reverse: L = (M, W, F) → (F, W, M)
+Three pointers: r(prev), q(current), p(next)
+
+Initial:           Iter 1:           Iter 2:           Iter 3:
+┌─┐  ┌─┐  ┌─┐    ┌─┐  ┌─┐  ┌─┐    ┌─┐  ┌─┐  ┌─┐    ┌─┐  ┌─┐  ┌─┐
+│M│─▶│W│─▶│F│──▶ │M│  │W│─▶│F│──▶ │M│◀─│W│  │F│──▶ │M│◀─│W│◀─│F│
+└─┘  └─┘  └─┘    └─┘  └─┘  └─┘    └─┘  └─┘  └─┘    └─┘  └─┘  └─┘
+ ▲               NULL  ▲    ▲           ▲    ▲    ▲           ▲    ▲
+ p                     q    p           r    q    p           r    q
+q=NULL                r=q              r=q                   r=q   p=NULL
+r=NULL                q=p              q=p                   q=p
+                      p=p->link        p=p->link             p=p->link
+                      q->link=r        q->link=r             q->link=r
+
+Final: L->head = q
+       ┌─┐  ┌─┐  ┌─┐
+  NULL◀─│M│◀─│W│◀─│F│
+       └─┘  └─┘  └─┘
+                  ▲
+                L->head
+**********************************************************/
